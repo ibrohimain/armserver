@@ -1,0 +1,47 @@
+
+export const KAFEDRALAR = [
+  "Transport vositalari muhandisligi",
+  "Transport logistikasi",
+  "Kimyo muhandisligi",
+  "Umumtexnika fanlari",
+  "Ijtimoiy fanlar",
+  "Qurilish muhandisligi",
+  "Yo'l muhandisligi",
+  "Qurilish materiallari va konstruksiyalari",
+  "Muhandislik kommunikatsiyalari",
+  "Arxitekturaviy loyihalash",
+  "Iqtisodiyot va menejment",
+  "Kompyuter va dasturiy injiniring",
+  "Radioelektronika",
+  "O'zbek va xorijiy tillar",
+  "Jismoniy tarbiya",
+  "Energetika va elektr texnologiyasi",
+  "Metrologiya va standartlashtirish",
+  "Oliy matematika",
+  "Fizika",
+  "To'qimachilik mahsulotlari texnologiyasi",
+  "Tabiiy tolalar va matoga ishlov berish texnologiyasi",
+  "Qishloq xo'jalik va oziq-ovqat texnika texnologiyalari",
+  "Ekologiya va mehnat muhofazasi"
+];
+
+export const ADABIYOT_TURLARI = [
+  "Darslik",
+  "Uslubiy ko'rsatma",
+  "O'quv qo'llanma",
+  "Badiiy adabiyot",
+  "Uslubiy qo'llanma",
+  "Lug'atlar",
+  "Ma'lumotnomalar",
+  "Ma'ruzalar to'plami",
+  "O'quv-uslubiy majmua",
+  "Ilmiy maqola",
+  "Ilmiy tezis",
+  "MSc dissertatsiya",
+  "PhD dissertatsiya",
+  "DSc dissertatsiya",
+  "PhD Avtoreferat",
+  "DSc Avtoreferat",
+  "Monografiya",
+  "Boshqa adabiyotlar"
+];
