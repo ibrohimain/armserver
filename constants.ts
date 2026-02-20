@@ -45,3 +45,21 @@ export const ADABIYOT_TURLARI = [
   "Monografiya",
   "Boshqa adabiyotlar"
 ];
+
+export const STAFF_NAMES = [
+  "Abdullayev Ibroxim",
+  "Tursunova Maloxat",
+  "Xazratkulova Visola",
+  "Ishanqulova Shaxnoza",
+  "G'ulomova Zarifa",
+  "Ilhomova Dildora",
+  "Xoliqulova Rita",
+  "Kengasheva Mexri",
+  "O'rinboyeva Dilrabo",
+  "Mamadazizova Shaxnoza",
+  "Muhammadova Lobar",
+  "Xakimova Gulchexra",
+  "To'rayeva Gulchexra",
+  "Qosimova Zulfiya",
+  "Shukurova Gulzoda"
+];

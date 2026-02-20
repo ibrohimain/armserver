@@ -51,7 +51,17 @@ const Boshqalar: React.FC<Props> = ({ onSelectType, books, onBack }) => {
             <span className="mr-2">←</span> Dashboardga qaytish
           </button>
           <h2 className="text-3xl font-black text-slate-800">Boshqa Adabiyotlar</h2>
-          <p className="text-slate-500 font-bold text-sm mt-1">Umumiy kataloglar va maxsus xonalar</p>
+          <div className="flex items-center space-x-4 mt-2">
+            <p className="text-slate-500 font-bold text-sm">Umumiy kataloglar va maxsus xonalar</p>
+            <div className="flex items-center space-x-2">
+              <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                {allCategories.length} KATALOG
+              </span>
+              <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                {otherBooks.length} JAMI KITOB
+              </span>
+            </div>
+          </div>
         </div>
         <button 
           onClick={() => setShowAdd(true)}

@@ -5,13 +5,14 @@ import { Book } from '../types';
 interface Props {
   kafedra?: string | null;
   type?: string | null;
+  oqituvchiTuri?: string | null;
   books: Book[];
   onDelete: (id: string) => void;
   onEdit: (book: Book) => void;
   onBack: () => void;
 }
 
-const BookList: React.FC<Props> = ({ kafedra, type, books, onDelete, onEdit, onBack }) => {
+const BookList: React.FC<Props> = ({ kafedra, type, oqituvchiTuri, books, onDelete, onEdit, onBack }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredBooks = books
@@ -19,10 +20,14 @@ const BookList: React.FC<Props> = ({ kafedra, type, books, onDelete, onEdit, onB
       const matchesSearch = b.nomi.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           b.muallifi.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesKafedra = !kafedra || b.kafedrasi === kafedra;
-      const matchesType = !type || b.adabiyotTuri === type;
+      const matchesKafedra = (kafedra && kafedra !== 'Boshqa') 
+        ? b.kafedrasi === kafedra 
+        : (kafedra === 'Boshqa' ? (b.kafedrasi === 'Boshqa' || !b.kafedrasi) : true);
       
-      return matchesSearch && matchesKafedra && matchesType;
+      const matchesType = !type || b.adabiyotTuri === type;
+      const matchesOqituvchi = !oqituvchiTuri || (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === oqituvchiTuri;
+      
+      return matchesSearch && matchesKafedra && matchesType && matchesOqituvchi;
     })
     .sort((a, b) => a.nomi.localeCompare(b.nomi));
 
@@ -136,9 +141,12 @@ const BookList: React.FC<Props> = ({ kafedra, type, books, onDelete, onEdit, onB
             <div className="w-1.5 h-10 bg-blue-600 rounded-full"></div>
             <div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
-                {kafedra || 'Katalog'} <span className="text-blue-600">/ {type || 'Barchasi'}</span>
+                {kafedra === 'Boshqa' ? 'Boshqa Adabiyotlar' : (kafedra || 'Katalog')} <span className="text-blue-600">/ {type || 'Barchasi'}</span>
               </h2>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-[2px] mt-1.5">Jami ro'yxatda: {filteredBooks.length} ta</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-[2px] mt-1.5">
+                {oqituvchiTuri && <span className="text-blue-500 mr-2">{oqituvchiTuri}</span>}
+                Jami ro'yxatda: {filteredBooks.length} ta
+              </p>
             </div>
           </div>
         </div>

@@ -24,6 +24,12 @@ const Dashboard: React.FC<DashboardProps> = ({ books }) => {
     value: books.filter(b => b.kafedrasi === dept).length
   })).filter(d => d.value > 0);
 
+  // Count by Author Type
+  const authorTypeCounts = [
+    { name: 'JizPi o\'qituvchisi', value: books.filter(b => (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === 'JizPi o\'qituvchisi').length },
+    { name: 'Boshqa mualliflar', value: books.filter(b => b.oqituvchiTuri === 'JizPi o\'qituvchisi emas').length }
+  ];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -35,8 +41,20 @@ const Dashboard: React.FC<DashboardProps> = ({ books }) => {
             <span className="mr-1">📈</span> Bazaning umumiy hajmi
           </div>
         </div>
+
+        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Mualliflar Kesimi</p>
+          <div className="mt-2 space-y-1">
+            {authorTypeCounts.map((item, idx) => (
+              <div key={item.name} className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-slate-500 truncate max-w-[100px]">{item.name}</span>
+                <span className={`text-sm font-black ${idx === 0 ? 'text-blue-600' : 'text-slate-800'}`}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
         
-        {typeCounts.slice(0, 3).map((item, idx) => (
+        {typeCounts.slice(0, 2).map((item, idx) => (
           <div key={item.name} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.name}</p>
             <h3 className="text-3xl font-black text-slate-800 mt-2">{item.value.toLocaleString()}</h3>

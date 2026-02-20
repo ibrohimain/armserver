@@ -11,6 +11,9 @@ export interface Book {
   muallifRuxsati: string; 
   yaratilganSana: string;
   unilibraryLink: string;
+  addedBy?: string;
+  oqituvchiTuri: 'JizPi o\'qituvchisi' | 'JizPi o\'qituvchisi emas';
+  createdAt?: any; // Firestore timestamp
 }
 
 export type ViewType = 
@@ -20,7 +23,10 @@ export type ViewType =
   | 'barcha-kitoblar' 
   | 'add-book' 
   | 'kafedra-detail' 
-  | 'boshqa-detail';
+  | 'kafedra-teacher-selection'
+  | 'boshqa-detail'
+  | 'staff-room'
+  | 'overall-stats';
 
 export interface UserSession {
   uid: string;

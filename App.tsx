@@ -9,12 +9,17 @@ import Kafedralar from './components/Kafedralar';
 import Boshqalar from './components/Boshqalar';
 import BookList from './components/BookList';
 import AddBook from './components/AddBook';
+import StaffSelection from './components/StaffSelection';
+import StaffRoom from './components/StaffRoom';
+import OverallStats from './components/OverallStats';
 import { UserSession, ViewType, Book } from './types';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserSession | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<ViewType>('dashboard');
   const [selectedKafedra, setSelectedKafedra] = useState<string | null>(null);
+  const [selectedOqituvchiTuri, setSelectedOqituvchiTuri] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,6 +28,9 @@ const App: React.FC = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem('jizpi_lib_user');
     if (storedUser) setUser(JSON.parse(storedUser));
+
+    const storedStaff = localStorage.getItem('jizpi_lib_staff');
+    if (storedStaff) setSelectedStaff(storedStaff);
 
     const q = query(collection(db, "books"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -47,13 +55,21 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     setUser(null);
+    setSelectedStaff(null);
     localStorage.removeItem('jizpi_lib_user');
+    localStorage.removeItem('jizpi_lib_staff');
+  };
+
+  const handleStaffSelect = (name: string) => {
+    setSelectedStaff(name);
+    localStorage.setItem('jizpi_lib_staff', name);
   };
 
   const handleAddBook = async (bookData: Omit<Book, 'id'>) => {
     try {
       await addDoc(collection(db, "books"), {
         ...bookData,
+        addedBy: selectedStaff,
         createdAt: serverTimestamp()
       });
       setCurrentView('dashboard');
@@ -83,6 +99,11 @@ const App: React.FC = () => {
 
   const enterKafedra = (kafedra: string) => {
     setSelectedKafedra(kafedra);
+    setCurrentView('kafedra-teacher-selection');
+  };
+
+  const selectTeacherType = (type: string) => {
+    setSelectedOqituvchiTuri(type);
     setCurrentView('kafedra-detail');
   };
 
@@ -100,6 +121,8 @@ const App: React.FC = () => {
   }
 
   if (!user) return <Login onLogin={handleLogin} />;
+  
+  if (!selectedStaff) return <StaffSelection onSelect={handleStaffSelect} />;
 
   return (
     <div className="min-h-screen">
@@ -111,10 +134,11 @@ const App: React.FC = () => {
         }
       `}</style>
       
-      <Layout user={user} currentView={currentView} setView={(v) => { 
+      <Layout user={user} selectedStaff={selectedStaff} currentView={currentView} setView={(v) => { 
         setCurrentView(v); 
-        if (v !== 'kafedra-detail' && v !== 'barcha-kitoblar') {
-          setSelectedKafedra(null);
+        if (v !== 'kafedra-detail' && v !== 'barcha-kitoblar' && v !== 'kafedra-teacher-selection') {
+          setSelectedKafedra(v === 'boshqalar' ? 'Boshqa' : null);
+          setSelectedOqituvchiTuri(null);
           setSelectedType(null);
         }
       }} onLogout={handleLogout}>
@@ -123,12 +147,20 @@ const App: React.FC = () => {
         
         {currentView === 'kafedralar' && <Kafedralar onSelect={enterKafedra} books={books} />}
         
+        {currentView === 'kafedra-teacher-selection' && (
+          <TeacherTypeSelection 
+            kafedra={selectedKafedra || ''} 
+            onSelect={selectTeacherType}
+            onBack={() => setCurrentView('kafedralar')}
+          />
+        )}
+        
         {currentView === 'kafedra-detail' && (
           <CategoryGrid 
-            title={selectedKafedra || ''} 
-            books={books.filter(b => b.kafedrasi === selectedKafedra)}
+            title={`${selectedKafedra} (${selectedOqituvchiTuri})`} 
+            books={books.filter(b => b.kafedrasi === selectedKafedra && (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === selectedOqituvchiTuri)}
             onSelectType={enterCategoryBooks}
-            onBack={() => setCurrentView('kafedralar')}
+            onBack={() => setCurrentView('kafedra-teacher-selection')}
           />
         )}
 
@@ -140,17 +172,22 @@ const App: React.FC = () => {
           <BookList 
             kafedra={selectedKafedra} 
             type={selectedType} 
+            oqituvchiTuri={selectedOqituvchiTuri}
             books={books} 
             onDelete={handleDeleteBook}
             onEdit={setEditingBook}
             onBack={() => {
-              if (selectedKafedra) setCurrentView('kafedra-detail');
+              if (selectedKafedra && selectedKafedra !== 'Boshqa') setCurrentView('kafedra-detail');
               else setCurrentView('boshqalar');
             }}
           />
         )}
 
         {currentView === 'add-book' && <AddBook onAdd={handleAddBook} />}
+
+        {currentView === 'staff-room' && <StaffRoom books={books} />}
+
+        {currentView === 'overall-stats' && <OverallStats books={books} />}
         
         {editingBook && (
           <EditModal 
@@ -160,6 +197,48 @@ const App: React.FC = () => {
           />
         )}
       </Layout>
+    </div>
+  );
+};
+
+const TeacherTypeSelection = ({ kafedra, onSelect, onBack }: any) => {
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <button onClick={onBack} className="mb-6 text-blue-600 font-bold flex items-center hover:underline">
+        <span className="mr-2">←</span> Kafedralarga qaytish
+      </button>
+      <div className="mb-10">
+        <h2 className="text-3xl font-black text-slate-800 uppercase">{kafedra}</h2>
+        <p className="text-slate-400 font-bold text-sm">Muallif turini tanlang</p>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
+        <button 
+          onClick={() => onSelect('JizPi o\'qituvchisi')}
+          className="group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:scale-[1.02] transition-all text-left flex flex-col justify-between h-72"
+        >
+          <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center text-5xl group-hover:bg-blue-600 transition-all group-hover:rotate-6 shadow-inner">
+            🎓
+          </div>
+          <div>
+            <h3 className="font-black text-2xl text-slate-800 uppercase tracking-tight leading-tight mb-2 group-hover:text-blue-700">JizPI O'qituvchilari</h3>
+            <p className="text-sm font-bold text-slate-400">Institutimiz o'qituvchilari tomonidan yozilgan adabiyotlar</p>
+          </div>
+        </button>
+
+        <button 
+          onClick={() => onSelect('JizPi o\'qituvchisi emas')}
+          className="group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:scale-[1.02] transition-all text-left flex flex-col justify-between h-72"
+        >
+          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-5xl group-hover:bg-slate-900 transition-all group-hover:rotate-6 shadow-inner">
+            👥
+          </div>
+          <div>
+            <h3 className="font-black text-2xl text-slate-800 uppercase tracking-tight leading-tight mb-2 group-hover:text-slate-900">Boshqa Mualliflar</h3>
+            <p className="text-sm font-bold text-slate-400">Tashqi mualliflar va boshqa manbalardan olingan adabiyotlar</p>
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

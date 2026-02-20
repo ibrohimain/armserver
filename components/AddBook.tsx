@@ -18,6 +18,7 @@ const AddBook: React.FC<AddBookProps> = ({ onAdd }) => {
     nashrJoyi: '',
     nashrHolati: 'Yaxshi',
     muallifRuxsati: 'Bor',
+    oqituvchiTuri: 'JizPi o\'qituvchisi',
     unilibraryLink: ''
   });
 
@@ -136,6 +137,25 @@ const AddBook: React.FC<AddBookProps> = ({ onAdd }) => {
                     disabled={isSubmitting}
                     checked={formData.muallifRuxsati === opt}
                     onChange={() => setFormData({...formData, muallifRuxsati: opt})}
+                    className="w-5 h-5 text-blue-600 border-slate-300 focus:ring-blue-500" 
+                  />
+                  <span className="text-sm font-bold text-slate-600 group-hover:text-blue-600">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Muallif Turi</label>
+            <div className="flex space-x-4 pt-2">
+              {['JizPi o\'qituvchisi', 'JizPi o\'qituvchisi emas'].map(opt => (
+                <label key={opt} className="flex items-center space-x-2 cursor-pointer group">
+                  <input 
+                    type="radio" 
+                    name="oqituvchiTuri" 
+                    disabled={isSubmitting}
+                    checked={formData.oqituvchiTuri === opt}
+                    onChange={() => setFormData({...formData, oqituvchiTuri: opt as any})}
                     className="w-5 h-5 text-blue-600 border-slate-300 focus:ring-blue-500" 
                   />
                   <span className="text-sm font-bold text-slate-600 group-hover:text-blue-600">{opt}</span>
