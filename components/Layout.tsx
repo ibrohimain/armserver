@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { UserSession, ViewType, Book } from '../types';
 import IncentiveBanner from './IncentiveBanner';
-
+//kj
 interface LayoutProps {
   children: React.ReactNode;
   user: UserSession;
