@@ -2,7 +2,8 @@
 export const KAFEDRALAR = [
   "Transport vositalari muhandisligi",
   "Transport logistikasi",
-  "Kimyo muhandisligi",
+  "Kimyo",
+  "Kimyoviy texnalogiyalar",
   "Umumtexnika fanlari",
   "Ijtimoiy fanlar",
   "Qurilish muhandisligi",
@@ -22,7 +23,8 @@ export const KAFEDRALAR = [
   "To'qimachilik mahsulotlari texnologiyasi",
   "Tabiiy tolalar va matoga ishlov berish texnologiyasi",
   "Qishloq xo'jalik va oziq-ovqat texnika texnologiyalari",
-  "Ekologiya va mehnat muhofazasi"
+  "Ekologiya va mehnat muhofazasi",
+  "Energetika va elektr texnalogiyasi",
 ];
 
 export const ADABIYOT_TURLARI = [
