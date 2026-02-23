@@ -134,7 +134,7 @@ const App: React.FC = () => {
         }
       `}</style>
       
-      <Layout user={user} selectedStaff={selectedStaff} currentView={currentView} setView={(v) => { 
+      <Layout user={user} selectedStaff={selectedStaff} books={books} currentView={currentView} setView={(v) => { 
         setCurrentView(v); 
         if (v !== 'kafedra-detail' && v !== 'barcha-kitoblar' && v !== 'kafedra-teacher-selection') {
           setSelectedKafedra(v === 'boshqalar' ? 'Boshqa' : null);
