@@ -1,17 +1,19 @@
 
 import React, { useState } from 'react';
-import { UserSession, ViewType } from '../types';
+import { UserSession, ViewType, Book } from '../types';
+import IncentiveBanner from './IncentiveBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
   user: UserSession;
   selectedStaff: string | null;
+  books: Book[];
   currentView: ViewType;
   setView: (view: ViewType) => void;
   onLogout: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, user, selectedStaff, currentView, setView, onLogout }) => {
+const Layout: React.FC<LayoutProps> = ({ children, user, selectedStaff, books, currentView, setView, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuItems = [
@@ -122,6 +124,7 @@ const Layout: React.FC<LayoutProps> = ({ children, user, selectedStaff, currentV
         </header>
 
         <div className="flex-1 overflow-y-auto p-6 min-[1000px]:p-10 bg-slate-50/50">
+          <IncentiveBanner books={books} staffName={selectedStaff} />
           {children}
         </div>
       </main>
