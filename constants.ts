@@ -4,6 +4,7 @@ export const KAFEDRALAR = [
   "Transport logistikasi",
   "Kimyo",
   "Kimyoviy texnalogiyalar",
+  "Kimyo muhandisligi",
   "Umumtexnika fanlari",
   "Ijtimoiy fanlar",
   "Qurilish muhandisligi",
