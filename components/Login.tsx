@@ -17,16 +17,16 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setError('');
     setLoading(true);
 
-    // Simulated Authentication
+    // Authentication
     setTimeout(() => {
-      if (email && password.length >= 6) {
+      if (email === 'arm@gmail.com' && password === '123321') {
         onLogin({
-          uid: '123',
+          uid: 'admin-1',
           email: email,
-          role: email.includes('admin') ? 'admin' : 'employee'
+          role: 'admin'
         });
       } else {
-        setError("Email yoki parol noto'g'ri (Parol kamida 6 ta belgi)");
+        setError("Email yoki parol noto'g'ri");
       }
       setLoading(false);
     }, 1000);

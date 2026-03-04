@@ -25,11 +25,16 @@ const BookList: React.FC<Props> = ({ kafedra, type, oqituvchiTuri, books, onDele
         : (kafedra === 'Boshqa' ? (b.kafedrasi === 'Boshqa' || !b.kafedrasi) : true);
       
       const matchesType = !type || b.adabiyotTuri === type;
-      const matchesOqituvchi = !oqituvchiTuri || (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === oqituvchiTuri;
+      const matchesOqituvchi = oqituvchiTuri === 'Umumiy' 
+        ? (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === 'JizPi o\'qituvchisi' 
+        : (!oqituvchiTuri || (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === oqituvchiTuri);
       
       return matchesSearch && matchesKafedra && matchesType && matchesOqituvchi;
     })
     .sort((a, b) => a.nomi.localeCompare(b.nomi));
+
+  const teachersBooks = filteredBooks.filter(b => (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === 'JizPi o\'qituvchisi');
+  const otherAuthorsBooks = filteredBooks.filter(b => b.oqituvchiTuri === 'JizPi o\'qituvchisi emas');
 
   const handlePrint = () => {
     window.print();
@@ -101,30 +106,61 @@ const BookList: React.FC<Props> = ({ kafedra, type, oqituvchiTuri, books, onDele
             <span>Sana: {new Date().toLocaleDateString('uz-UZ')}</span>
           </div>
         </div>
-        <table className="w-full border-collapse border-2 border-slate-900 text-[10px]">
-          <thead>
-            <tr className="bg-slate-100">
-              <th className="border-2 border-slate-900 p-2 w-10">№</th>
-              <th className="border-2 border-slate-900 p-2 text-left">Kitob Nomi</th>
-              <th className="border-2 border-slate-900 p-2 text-left">Muallifi</th>
-              <th className="border-2 border-slate-900 p-2">Yili</th>
-              <th className="border-2 border-slate-900 p-2">Nashr Joyi</th>
-              <th className="border-2 border-slate-900 p-2">Unilibrary Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBooks.map((book, index) => (
-              <tr key={book.id}>
-                <td className="border-2 border-slate-900 p-2 text-center font-bold">{index + 1}</td>
-                <td className="border-2 border-slate-900 p-2 font-black">{book.nomi}</td>
-                <td className="border-2 border-slate-900 p-2">{book.muallifi}</td>
-                <td className="border-2 border-slate-900 p-2 text-center">{book.nashrYili}</td>
-                <td className="border-2 border-slate-900 p-2">{book.nashrJoyi}</td>
-                <td className="border-2 border-slate-900 p-2 text-[8px] break-all">{book.unilibraryLink}</td>
+
+        {oqituvchiTuri === 'Umumiy' ? (
+          <div className="mb-10">
+            <h3 className="text-sm font-black uppercase mb-4 border-b-2 border-slate-900 pb-2">JizPI O'qituvchilari tomonidan kiritilgan adabiyotlar ro'yxati</h3>
+            <table className="w-full border-collapse border-2 border-slate-900 text-[10px]">
+              <thead>
+                <tr className="bg-slate-100">
+                  <th className="border-2 border-slate-900 p-2 w-10">№</th>
+                  <th className="border-2 border-slate-900 p-2 text-left">Kitob Nomi</th>
+                  <th className="border-2 border-slate-900 p-2 text-left">Muallifi</th>
+                  <th className="border-2 border-slate-900 p-2">Yili</th>
+                  <th className="border-2 border-slate-900 p-2">Nashr Joyi</th>
+                  <th className="border-2 border-slate-900 p-2">Unilibrary Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBooks.map((book, index) => (
+                  <tr key={book.id}>
+                    <td className="border-2 border-slate-900 p-2 text-center font-bold">{index + 1}</td>
+                    <td className="border-2 border-slate-900 p-2 font-black">{book.nomi}</td>
+                    <td className="border-2 border-slate-900 p-2">{book.muallifi}</td>
+                    <td className="border-2 border-slate-900 p-2 text-center">{book.nashrYili}</td>
+                    <td className="border-2 border-slate-900 p-2">{book.nashrJoyi}</td>
+                    <td className="border-2 border-slate-900 p-2 text-[8px] break-all">{book.unilibraryLink}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <table className="w-full border-collapse border-2 border-slate-900 text-[10px]">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border-2 border-slate-900 p-2 w-10">№</th>
+                <th className="border-2 border-slate-900 p-2 text-left">Kitob Nomi</th>
+                <th className="border-2 border-slate-900 p-2 text-left">Muallifi</th>
+                <th className="border-2 border-slate-900 p-2">Yili</th>
+                <th className="border-2 border-slate-900 p-2">Nashr Joyi</th>
+                <th className="border-2 border-slate-900 p-2">Unilibrary Link</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredBooks.map((book, index) => (
+                <tr key={book.id}>
+                  <td className="border-2 border-slate-900 p-2 text-center font-bold">{index + 1}</td>
+                  <td className="border-2 border-slate-900 p-2 font-black">{book.nomi}</td>
+                  <td className="border-2 border-slate-900 p-2">{book.muallifi}</td>
+                  <td className="border-2 border-slate-900 p-2 text-center">{book.nashrYili}</td>
+                  <td className="border-2 border-slate-900 p-2">{book.nashrJoyi}</td>
+                  <td className="border-2 border-slate-900 p-2 text-[8px] break-all">{book.unilibraryLink}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
         <div className="mt-16 grid grid-cols-2 gap-20 px-10 font-black uppercase text-[10px]">
           <div className="border-t-2 border-slate-900 pt-2 text-center">Mas'ul xodim: _________________</div>
           <div className="border-t-2 border-slate-900 pt-2 text-center">Bo'lim boshlig'i: _________________</div>

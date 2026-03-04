@@ -13,6 +13,7 @@ import StaffSelection from './components/StaffSelection';
 import StaffRoom from './components/StaffRoom';
 import OverallStats from './components/OverallStats';
 import { UserSession, ViewType, Book } from './types';
+import { KAFEDRALAR, ADABIYOT_TURLARI } from './constants';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserSession | null>(null);
@@ -104,7 +105,12 @@ const App: React.FC = () => {
 
   const selectTeacherType = (type: string) => {
     setSelectedOqituvchiTuri(type);
-    setCurrentView('kafedra-detail');
+    if (type === 'Umumiy') {
+      setSelectedType(null);
+      setCurrentView('barcha-kitoblar');
+    } else {
+      setCurrentView('kafedra-detail');
+    }
   };
 
   const enterCategoryBooks = (type: string) => {
@@ -158,7 +164,11 @@ const App: React.FC = () => {
         {currentView === 'kafedra-detail' && (
           <CategoryGrid 
             title={`${selectedKafedra} (${selectedOqituvchiTuri})`} 
-            books={books.filter(b => b.kafedrasi === selectedKafedra && (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === selectedOqituvchiTuri)}
+            books={books.filter(b => {
+              const matchesKafedra = b.kafedrasi === selectedKafedra;
+              if (selectedOqituvchiTuri === 'Umumiy') return matchesKafedra;
+              return matchesKafedra && (b.oqituvchiTuri || 'JizPi o\'qituvchisi') === selectedOqituvchiTuri;
+            })}
             onSelectType={enterCategoryBooks}
             onBack={() => setCurrentView('kafedra-teacher-selection')}
           />
@@ -177,7 +187,10 @@ const App: React.FC = () => {
             onDelete={handleDeleteBook}
             onEdit={setEditingBook}
             onBack={() => {
-              if (selectedKafedra && selectedKafedra !== 'Boshqa') setCurrentView('kafedra-detail');
+              if (selectedKafedra && selectedKafedra !== 'Boshqa') {
+                if (selectedOqituvchiTuri === 'Umumiy') setCurrentView('kafedra-teacher-selection');
+                else setCurrentView('kafedra-detail');
+              }
               else setCurrentView('boshqalar');
             }}
           />
@@ -185,7 +198,13 @@ const App: React.FC = () => {
 
         {currentView === 'add-book' && <AddBook onAdd={handleAddBook} />}
 
-        {currentView === 'staff-room' && <StaffRoom books={books} />}
+        {currentView === 'staff-room' && (
+          <StaffRoom 
+            books={books} 
+            onDelete={handleDeleteBook}
+            onEdit={setEditingBook}
+          />
+        )}
 
         {currentView === 'overall-stats' && <OverallStats books={books} />}
         
@@ -212,7 +231,7 @@ const TeacherTypeSelection = ({ kafedra, onSelect, onBack }: any) => {
         <p className="text-slate-400 font-bold text-sm">Muallif turini tanlang</p>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
         <button 
           onClick={() => onSelect('JizPi o\'qituvchisi')}
           className="group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:scale-[1.02] transition-all text-left flex flex-col justify-between h-72"
@@ -236,6 +255,19 @@ const TeacherTypeSelection = ({ kafedra, onSelect, onBack }: any) => {
           <div>
             <h3 className="font-black text-2xl text-slate-800 uppercase tracking-tight leading-tight mb-2 group-hover:text-slate-900">Boshqa Mualliflar</h3>
             <p className="text-sm font-bold text-slate-400">Tashqi mualliflar va boshqa manbalardan olingan adabiyotlar</p>
+          </div>
+        </button>
+
+        <button 
+          onClick={() => onSelect('Umumiy')}
+          className="group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:scale-[1.02] transition-all text-left flex flex-col justify-between h-72"
+        >
+          <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-5xl group-hover:bg-emerald-600 transition-all group-hover:rotate-6 shadow-inner">
+            📂
+          </div>
+          <div>
+            <h3 className="font-black text-2xl text-slate-800 uppercase tracking-tight leading-tight mb-2 group-hover:text-emerald-700">Umumiy Ro'yxat</h3>
+            <p className="text-sm font-bold text-slate-400">Kafedraga tegishli barcha turdagi adabiyotlar jamlanmasi</p>
           </div>
         </button>
       </div>
@@ -302,7 +334,7 @@ const EditModal = ({ book, onClose, onSave }: any) => {
           </div>
           <button onClick={onClose} className="w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-2xl transition-all">&times;</button>
         </div>
-        <div className="p-10 grid grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+        <div className="p-10 grid grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
           <div className="col-span-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Kitob nomi</label>
             <input className="w-full p-4 bg-slate-50 border-0 rounded-2xl mt-1 font-bold focus:ring-2 focus:ring-blue-500" value={formData.nomi} onChange={e => setFormData({...formData, nomi: e.target.value})} />
@@ -311,6 +343,42 @@ const EditModal = ({ book, onClose, onSave }: any) => {
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Muallif(lar)</label>
             <input className="w-full p-4 bg-slate-50 border-0 rounded-2xl mt-1 font-bold focus:ring-2 focus:ring-blue-500" value={formData.muallifi} onChange={e => setFormData({...formData, muallifi: e.target.value})} />
           </div>
+          
+          <div>
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Adabiyot turi</label>
+            <select 
+              className="w-full p-4 bg-slate-50 border-0 rounded-2xl mt-1 font-bold focus:ring-2 focus:ring-blue-500" 
+              value={formData.adabiyotTuri} 
+              onChange={e => setFormData({...formData, adabiyotTuri: e.target.value})}
+            >
+              {ADABIYOT_TURLARI.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Muallif turi</label>
+            <select 
+              className="w-full p-4 bg-slate-50 border-0 rounded-2xl mt-1 font-bold focus:ring-2 focus:ring-blue-500" 
+              value={formData.oqituvchiTuri || "JizPi o'qituvchisi"} 
+              onChange={e => setFormData({...formData, oqituvchiTuri: e.target.value})}
+            >
+              <option value="JizPi o'qituvchisi">JizPi o'qituvchisi</option>
+              <option value="JizPi o'qituvchisi emas">JizPi o'qituvchisi emas</option>
+            </select>
+          </div>
+
+          <div className="col-span-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Kafedrasi</label>
+            <select 
+              className="w-full p-4 bg-slate-50 border-0 rounded-2xl mt-1 font-bold focus:ring-2 focus:ring-blue-500" 
+              value={formData.kafedrasi || "Boshqa"} 
+              onChange={e => setFormData({...formData, kafedrasi: e.target.value})}
+            >
+              {KAFEDRALAR.map(k => <option key={k} value={k}>{k}</option>)}
+              <option value="Boshqa">Boshqa</option>
+            </select>
+          </div>
+
           <div>
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nashr yili</label>
             <input className="w-full p-4 bg-slate-50 border-0 rounded-2xl mt-1 font-bold focus:ring-2 focus:ring-blue-500" value={formData.nashrYili} onChange={e => setFormData({...formData, nashrYili: e.target.value})} />
@@ -331,6 +399,6 @@ const EditModal = ({ book, onClose, onSave }: any) => {
       </div>
     </div>
   );
-}
+};
 
 export default App;
