@@ -1,7 +1,8 @@
-
 export const KAFEDRALAR = [
   "Transport vositalari muhandisligi",
   "Transport logistikasi",
+  "Kimyo",
+  "Kimyoviy texnalogiyalar",
   "Kimyo muhandisligi",
   "Umumtexnika fanlari",
   "Ijtimoiy fanlar",
@@ -22,7 +23,8 @@ export const KAFEDRALAR = [
   "To'qimachilik mahsulotlari texnologiyasi",
   "Tabiiy tolalar va matoga ishlov berish texnologiyasi",
   "Qishloq xo'jalik va oziq-ovqat texnika texnologiyalari",
-  "Ekologiya va mehnat muhofazasi"
+  "Ekologiya va mehnat muhofazasi",
+  "Energetika va elektr texnalogiyasi",
 ];
 
 export const ADABIYOT_TURLARI = [
@@ -47,12 +49,19 @@ export const ADABIYOT_TURLARI = [
 ];
 
 export const STAFF_NAMES = [
+  "Abdullayev Ibroxim",
   "Tursunova Maloxat",
-  "Visola",
-  "Sevara",
-  "Guli",
-  "Nodira",
-  "Zilola",
-  "Shahnoza",
-  "Dilnoza"
+  "Xazratkulova Visola",
+  "Ishanqulova Shaxnoza",
+  "G'ulomova Zarifa",
+  "Ilhomova Dildora",
+  "Xoliqulova Rita",
+  "Kengasheva Mexri",
+  "O'rinboyeva Dilrabo",
+  "Mamadazizova Shaxnoza",
+  "Muhammadova Lobar",
+  "Xakimova Gulchexra",
+  "To'rayeva Gulchexra",
+  "Qosimova Zulfiya",
+  "Shukurova Gulzoda"
 ];
